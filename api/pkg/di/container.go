@@ -2045,7 +2045,7 @@ func logger(skipFrameCount int) telemetry.Logger {
 }
 
 func logDriver(skipFrameCount int) *zerodriver.Logger {
-	if isLocal() {
+	if isLocal() || os.Getenv("AXIOM_TOKEN") == "" {
 		return consoleLogger(skipFrameCount)
 	}
 	return axiomLogger(skipFrameCount)
