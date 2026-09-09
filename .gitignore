@@ -13,6 +13,9 @@ tests/emulator/emulator.exe
 SECURITY_AUDIT_REPORT.md
 
 *.exe
+*.apk
+local.properties
+
 
 .output
 .agents/
