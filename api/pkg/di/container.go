@@ -514,11 +514,11 @@ func (container *Container) EventsQueueConfiguration() (config services.PushQueu
 func (container *Container) EventsQueue() (queue services.PushQueue) {
 	container.logger.Debug("creating events services.PushQueue")
 
-	if os.Getenv("EVENTS_QUEUE_TYPE") == "emulator" {
-		return container.EmulatorEventsQueue()
+	if os.Getenv("EVENTS_QUEUE_TYPE") == "cloud_tasks" {
+		return container.CloudTaskEventsQueue()
 	}
 
-	return container.CloudTaskEventsQueue()
+	return container.EmulatorEventsQueue()
 }
 
 // EmulatorEventsQueue creates an in process instance of events services.PushQueue

@@ -56,6 +56,11 @@ func (queue *emulatorPushQueue) Enqueue(ctx context.Context, task *PushQueueTask
 
 func (queue *emulatorPushQueue) push(task PushQueueTask, queueID string) func() {
 	return func() {
+		if task.URL == "" {
+			queue.logger.Debug(fmt.Sprintf("skipping push for task [%s] because URL is empty", queueID))
+			return
+		}
+
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		defer cancel()
 
