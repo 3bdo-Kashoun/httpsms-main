@@ -41,6 +41,19 @@ func main() {
 		docs.SwaggerInfo.Version = Version
 	}
 
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = os.Getenv("APP_PORT")
+	}
+	if port == "" {
+		port = "8000"
+	}
+
+	host := os.Getenv("APP_HOST")
+	if host == "" {
+		host = "0.0.0.0"
+	}
+
 	container := di.NewContainer(os.Getenv("GCP_PROJECT_ID"), Version)
-	container.Logger().Info(container.App().Listen(fmt.Sprintf("%s:%s", os.Getenv("APP_HOST"), os.Getenv("APP_PORT"))).Error())
+	container.Logger().Info(container.App().Listen(fmt.Sprintf("%s:%s", host, port)).Error())
 }
