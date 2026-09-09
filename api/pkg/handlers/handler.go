@@ -158,5 +158,8 @@ func (h *handler) authorizePhoneAPIKey(c fiber.Ctx, phoneNumber string) bool {
 	if user.PhoneAPIKeyID == nil {
 		return true
 	}
+	if len(user.PhoneNumbers) == 0 {
+		return true
+	}
 	return slices.Contains(user.PhoneNumbers, phoneNumber)
 }
