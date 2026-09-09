@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -85,12 +86,21 @@ func (dispatcher *EventDispatcher) enqueue(ctx context.Context, event cloudevent
 	ctx, span, ctxLogger := dispatcher.tracer.StartWithLogger(ctx, dispatcher.logger)
 	defer span.End()
 
+	if strings.TrimSpace(dispatcher.queueConfig.ConsumerEndpoint) == "" {
+		ctxLogger.Info(fmt.Sprintf("ConsumerEndpoint is empty, dispatching event [%s] in-process directly", event.Type()))
+		queueID := fmt.Sprintf("local-%s", event.ID())
+		time.AfterFunc(timeout, func() {
+			dispatcher.Publish(context.Background(), event)
+		})
+		return queueID, nil
+	}
+
 	queueID, err := dispatcher.queue.Enqueue(ctx, task, timeout)
 	if errors.Is(err, context.DeadlineExceeded) {
 		ctxLogger.Warn(stacktrace.Propagatef(err, "cannot enqueue event with ID [%s] and type [%s] to [%T]", event.ID(), event.Type(), dispatcher.queue))
 		queueID, err = fmt.Sprintf("local-%s", event.ID()), nil
 		time.AfterFunc(timeout, func() {
-			dispatcher.Publish(ctx, event)
+			dispatcher.Publish(context.Background(), event)
 		})
 	}
 	return queueID, err
