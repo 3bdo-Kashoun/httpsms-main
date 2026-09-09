@@ -165,7 +165,7 @@ func (service *PhoneService) dispatchPhoneUpdatedEvent(ctx context.Context, phon
 	}
 
 	if err = service.dispatcher.Dispatch(ctx, event); err != nil {
-		service.logger.Warn(fmt.Sprintf("cannot dispatch event [%s] for phone with id [%s]: %v", event.Type(), phone.ID, err))
+		service.logger.Info(fmt.Sprintf("cannot dispatch event [%s] for phone with id [%s]: %v", event.Type(), phone.ID, err))
 		return nil
 	}
 	return nil
