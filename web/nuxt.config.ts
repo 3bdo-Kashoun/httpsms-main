@@ -140,8 +140,9 @@ export default defineNuxtConfig({
   },
 
   nitro: {
+    preset: 'static',
     prerender: {
-      routes: [],
+      routes: ['/'],
       failOnError: false,
     },
   },
